@@ -7,7 +7,7 @@ import "./zeppelin/PullPayment.sol";
 
 contract Market is Killable, PullPayment {
 
-  enum State { Open, Closed, Resolved }
+  enum State { Open, Closed, Resolved, Finished }
 
   string public text;
   bool outcome;
@@ -41,9 +41,17 @@ contract Market is Killable, PullPayment {
     Bet(msg.sender, prediction, msg.value);
   }
 
+  //checks if the end of betting period is reached
   function checkDate() stateIs(State.Open) external {
     if(block.number >= endDate) {
       state = State.Closed;
+    }
+  }
+
+  //checks if the end withdrawal period is reached
+  function checkDateWithdrawals() stateIs(State.Resolved) {
+    if(block.number >= endDate) {
+      state = State.Finished
     }
   }
 
@@ -53,6 +61,9 @@ contract Market is Killable, PullPayment {
     outcome = _outcome;
 
     state = State.Resolved;
+
+    //set to about a week from current block number
+    endDate = block.number + 43200;
 
     //notify Participants via event
     Resolved(outcome);
@@ -69,9 +80,9 @@ contract Market is Killable, PullPayment {
     }
   }
 
-  // contract should only be killable after it has been resolved
+  // contract should only be killable after withdrawal period is over
   function kill() onlyOwner {
-    if(state == State.Resolved)
+    if(state == State.Finished)
       super.kill();
   }
 
