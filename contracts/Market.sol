@@ -1,57 +1,84 @@
 pragma solidity ^0.4.4;
 
 
-import "zeppelin/contracts/Killable.sol";
+import "./zeppelin/Killable.sol";
+import "./zeppelin/PullPayment.sol";
 
-contract Market is Killable {
+
+contract Market is Killable, PullPayment {
+
+  enum State { Open, Closed, Resolved }
 
   string public text;
-  bool public active;
+  bool outcome;
   mapping(bool => mapping(address => uint)) bets;
-  mapping(bool => string) outcomes;
   mapping(bool => uint) totals;
+  uint public endDate; //block number
+  uint private fee;
+  uint private multiplier;
+  State state;
 
-  function Market(string _text, string trueOutcome, string falseOutcome) {
+  function Market(string _text, uint _endDate) {
     text = _text;
-    active = true;
-
-    //Should choosing outcomes even be an option or should it be limited to the same true/false?
-    outcomes[true] = trueOutcome;
-    outcomes[false] = falseOutcome;
+    endDate = _endDate;
+    state = State.Open;
+    multiplier = 100;
+    fee = 2; //2%
   }
 
   // sending money to the contract equals a bet for true
-  function () payable onlyActive {
-    bet(true)
+  function () payable stateIs(State.Open) {
+    bet(true);
   }
 
-  function bet(bool prediction) payable onlyActive {
-    //multiple bets?
+  event Bet(address _from, bool prediction, uint value);
+
+  function bet(bool prediction) payable stateIs(State.Open) {
     bets[prediction][msg.sender] += msg.value;
 
     totals[prediction] += msg.value;
+
+    Bet(msg.sender, prediction, msg.value);
   }
 
-  // owner chooses the winning outcome, distributing funds to the winners and deactivating the contract
-  function chooseOutcome(bool outcome) onlyOwner onlyActive {
-    //pay out to winners
+  function checkDate() stateIs(State.Open) external {
+    if(block.number >= endDate) {
+      state = State.Closed;
+    }
+  }
 
-    //how is the payout calculated?
+  event Resolved(bool prediction);
 
-    //notify Participants?
+  function chooseOutcome(bool _outcome) onlyOwner stateIs(State.Closed) external {
+    outcome = _outcome;
 
-    active = false;
+    state = State.Resolved;
+
+    //notify Participants via event
+    Resolved(outcome);
+  }
+
+  function claimWinnings() stateIs(State.Resolved) external {
+    if(bets[outcome][msg.sender] > 0) {
+      uint percentage = (bets[outcome][msg.sender] * multiplier) / totals[outcome];
+      uint winnings = (totals[!outcome] * percentage) / multiplier;
+      uint rake = (winnings * fee) / multiplier;
+      winnings = winnings - rake;
+      asyncSend(msg.sender, winnings + bets[outcome][msg.sender]);
+      bets[outcome][msg.sender] = 0;
+    }
   }
 
   // contract should only be killable after it has been resolved
   function kill() onlyOwner {
-    if(!active)
+    if(state == State.Resolved)
       super.kill();
   }
 
-  modifier onlyActive() {
-    if(active)
-      _;
+  modifier stateIs(State _state) {
+    if(state != _state)
+      throw;
+    _;
   }
 
 
