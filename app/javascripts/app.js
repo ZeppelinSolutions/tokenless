@@ -108,6 +108,7 @@ function createMarket() {
 var market, state;
 var bets = [];
 var betEvent;
+var resolvedEvent
 var totals = [];
 var walletTotals = [];
 
@@ -126,6 +127,9 @@ function loadDetails(address) {
 
   if(betEvent) {
     betEvent.stopWatching();
+  }
+  if(resolvedEvent) {
+    resolvedEvent.stopWatching();
   }
   bets = [];
   $('#betTable').dataTable().fnClearTable();
@@ -179,16 +183,14 @@ function loadDetails(address) {
         }
       })
     } else if (state == "Resolved") {
-      var resolvedEvent = market.Resolved({},{fromBlock: 0, toBlock: 'latest'});
+      resolvedEvent = market.Resolved({},{fromBlock: 0, toBlock: 'latest'});
       resolvedEvent.watch(function(error, result) {
         if(error) {
           console.log(error);
         }
         console.log("ResolveEvent caught");
-        if(result.args.outcome) {
-          $('#actualOutcome').text(result.args.outcome);
-          $('#withdrawForm').show();
-        }
+        $('#actualOutcome').text(result.args.outcome);
+        $('#withdrawForm').show();
       });
 
     }

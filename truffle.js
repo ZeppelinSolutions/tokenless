@@ -16,8 +16,7 @@ module.exports = {
     ],
     "jquery.dataTables.css": [
       "stylesheets/jquery.dataTables.css"
-    ],
-    "images/": "images/"
+    ]
   }),
   networks: {
     development: {
