@@ -10,13 +10,17 @@ contract Market is Killable, PullPayment {
   enum State { Open, Closed, Resolved, Finished }
 
   string public text;
-  bool outcome;
-  mapping(bool => mapping(address => uint)) bets;
-  mapping(bool => uint) totals;
+  bool public outcome;
+  mapping(bool => mapping(address => uint)) public bets;
+  mapping(bool => uint) public totals;
   uint public endDate; //block number
   uint private fee;
   uint private multiplier;
-  State state;
+  State public state;
+
+  function isOpen() external constant returns(bool) {
+    return state == State.Open;
+  }
 
   function Market(string _text, uint _endDate) {
     text = _text;
@@ -31,14 +35,18 @@ contract Market is Killable, PullPayment {
     bet(true);
   }
 
-  event Bet(address _from, bool prediction, uint value);
+  event Bet(address from, bool prediction, uint value);
 
   function bet(bool prediction) payable stateIs(State.Open) {
-    bets[prediction][msg.sender] += msg.value;
+    if(block.number < endDate && msg.value > 0) { //TODO: determine a good minimum bet amount
+      bets[prediction][msg.sender] += msg.value;
 
-    totals[prediction] += msg.value;
+      totals[prediction] += msg.value;
 
-    Bet(msg.sender, prediction, msg.value);
+      Bet(msg.sender, prediction, msg.value);
+    } else {
+      throw;
+    }
   }
 
   //checks if the end of betting period is reached
@@ -49,13 +57,13 @@ contract Market is Killable, PullPayment {
   }
 
   //checks if the end withdrawal period is reached
-  function checkDateWithdrawals() stateIs(State.Resolved) {
+  function checkDateWithdrawals() stateIs(State.Resolved) external {
     if(block.number >= endDate) {
-      state = State.Finished
+      state = State.Finished;
     }
   }
 
-  event Resolved(bool prediction);
+  event Resolved(bool outcome);
 
   function chooseOutcome(bool _outcome) onlyOwner stateIs(State.Closed) external {
     outcome = _outcome;
@@ -65,7 +73,6 @@ contract Market is Killable, PullPayment {
     //set to about a week from current block number
     endDate = block.number + 43200;
 
-    //notify Participants via event
     Resolved(outcome);
   }
 
