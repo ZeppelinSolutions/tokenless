@@ -1,16 +1,28 @@
+var DefaultBuilder = require("truffle-default-builder");
+require('babel-core/register');
+require('babel-polyfill');
+
+
 module.exports = {
-  build: {
+  build: new DefaultBuilder({
     "index.html": "index.html",
     "app.js": [
+      "javascripts/jquery.min.js",
+      "javascripts/jquery.dataTables.js",
       "javascripts/app.js"
     ],
     "app.css": [
       "stylesheets/app.css"
     ],
-    "images/": "images/"
-  },
-  rpc: {
-    host: "localhost",
-    port: 8545
+    "jquery.dataTables.css": [
+      "stylesheets/jquery.dataTables.css"
+    ]
+  }),
+  networks: {
+    development: {
+      host: "localhost",
+      port: 8545,
+      network_id: "*" // Match any network id
+    }
   }
 };
