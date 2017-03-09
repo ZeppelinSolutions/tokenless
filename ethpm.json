@@ -1,0 +1,23 @@
+{
+  "package_name": "tokenless-prediction-market",
+  "version": "1.0.0",
+  "description": "Tokenless Prediction Market in Solidity",
+  "authors": [
+    "Manuel Araoz <manuelaraoz@gmail.com>"
+  ],
+  "keywords": [
+    "tokenless",
+    "prediction",
+    "market",
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "security",
+    "zeppelin"
+  ],
+  "dependencies": {
+    "zeppelin": "^1.0.4"
+  },
+  "license": "MIT"
+}

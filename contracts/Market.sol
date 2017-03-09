@@ -1,8 +1,8 @@
 pragma solidity ^0.4.4;
 
 
-import "./zeppelin/Killable.sol";
-import "./zeppelin/PullPayment.sol";
+import "zeppelin/lifecycle/Killable.sol";
+import "zeppelin/payment/PullPayment.sol";
 
 
 contract Market is Killable, PullPayment {
