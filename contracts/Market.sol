@@ -1,11 +1,11 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.11;
 
 
-import "./zeppelin/Killable.sol";
-import "./zeppelin/PullPayment.sol";
+import "zeppelin/lifecycle/Destructible.sol";
+import "zeppelin/payment/PullPayment.sol";
 
 
-contract Market is Killable, PullPayment {
+contract Market is Destructible, PullPayment {
 
   enum State { Open, Closed, Resolved, Finished }
 
@@ -87,10 +87,10 @@ contract Market is Killable, PullPayment {
     }
   }
 
-  // contract should only be killable after withdrawal period is over
-  function kill() onlyOwner {
+  // contract should only be destructible after withdrawal period is over
+  function destroy() onlyOwner {
     if(state == State.Finished)
-      super.kill();
+      super.destroy();
   }
 
   modifier stateIs(State _state) {

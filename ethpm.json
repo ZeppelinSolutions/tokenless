@@ -1,0 +1,7 @@
+{
+  "name": "tokenless-prediction-market",
+  "version": "1.0.0",
+  "dependencies": {
+    "zeppelin": "^1.0.4"
+  }
+}
