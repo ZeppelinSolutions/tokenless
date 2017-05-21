@@ -1,3 +1,5 @@
+import "../stylesheets/app.css";
+
 window.onload=function(e){checkweb3();}
 
 //Order of this array must match order of enum State in Market.sol
