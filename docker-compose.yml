@@ -1,0 +1,30 @@
+version: '2'
+
+volumes:
+  node_modules:
+  build:
+  installed_contracts:
+
+services:
+  app:
+    image: node:7.10
+    working_dir: /app
+    ports:
+      - 8080:8080
+    command: "truffle serve"
+    environment: &env
+      RPC_HOST: testrpc
+      PATH: '/app/node_modules/.bin/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    depends_on:
+      - testrpc
+    volumes: &volumes
+      - './:/app'
+      - 'node_modules:/app/node_modules'
+      - 'build:/app/build'
+      - 'installed_contracts:/app/installed_contracts'
+
+  testrpc:
+    image: provivus/testrpc
+    command: testrpc -a 50
+    ports:
+      - 8545:8545
