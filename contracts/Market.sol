@@ -3,63 +3,66 @@ pragma solidity ^0.4.11;
 
 import "zeppelin/lifecycle/Destructible.sol";
 import "zeppelin/payment/PullPayment.sol";
+import "zeppelin/SafeMath.sol";
 
 
 contract Market is Destructible, PullPayment {
 
+  using SafeMath for uint;
+
   enum State { Open, Closed, Resolved, Finished }
+
+  uint constant fee = 2; // in %
+  uint constant multiplier = 100000;
+  uint constant withdrawalPeriod = 43200;
+  uint constant minBet = 1000;
+  uint constant maxBet = 100 * (10 ** 18); // 100 ether
 
   string public text;
   bool public outcome;
+  uint public endBlock; //block number
+
   mapping(bool => mapping(address => uint)) public bets;
   mapping(bool => uint) public totals;
-  uint public endDate; //block number
-  uint private fee;
-  uint private multiplier;
-  State public state;
 
-  function isOpen() external constant returns(bool) {
-    return state == State.Open;
-  }
+  bool private resolved = false;
 
-  function Market(string _text, uint _endDate) {
+  function Market(string _text, uint _endBlock) {
     text = _text;
-    endDate = _endDate;
-    state = State.Open;
-    multiplier = 100;
-    fee = 2; //2%
+    endBlock = _endBlock;
   }
 
   // sending money to the contract equals a bet for true
+  // TODO: Review. Shouldn't we just reject it?
   function () payable stateIs(State.Open) {
     bet(true);
   }
 
-  event Bet(address from, bool prediction, uint value);
+  event Bet(address indexed from, bool prediction, uint value);
 
   function bet(bool prediction) payable stateIs(State.Open) {
-    if(block.number < endDate && msg.value > 0) { //TODO: determine a good minimum bet amount
-      bets[prediction][msg.sender] += msg.value;
-
-      totals[prediction] += msg.value;
-
-      Bet(msg.sender, prediction, msg.value);
-    } else {
+    if(msg.value < minBet || msg.value > maxBet) {
       throw;
     }
+
+    bets[prediction][msg.sender] = bets[prediction][msg.sender].add(msg.value);
+    totals[prediction] = totals[prediction].add(msg.value);
+    Bet(msg.sender, prediction, msg.value);
   }
 
-  //checks if the end of betting period is reached
-  function checkDate() stateIs(State.Open) external {
-    if(block.number >= endDate) {
-      state = State.Closed;
-    }
-  }
-
-  //checks if the end withdrawal period is reached
-  function checkDateWithdrawals() stateIs(State.Resolved) external {
-    if(block.number >= endDate) {
-      state = State.Finished;
+  function getState() constant returns (State) {
+    if (!resolved) {
+      if (block.number < endBlock) {
+        return State.Open;
+      } else {
+        return State.Closed;
+      }
+    } else {
+      if (block.number < endBlock) {
+        return State.Resolved;
+      } else {
+        return State.Finished;
+      }
     }
   }
 
@@ -67,38 +70,32 @@ contract Market is Destructible, PullPayment {
 
   function chooseOutcome(bool _outcome) onlyOwner stateIs(State.Closed) external {
     outcome = _outcome;
-
-    state = State.Resolved;
-
-    //set to about a week from current block number
-    endDate = block.number + 43200;
+    resolved = true;
+    endBlock = block.number + withdrawalPeriod;
 
     Resolved(outcome);
   }
 
+  // TODO: Should we just use ufixed types with non-int division instead of a "multiplier"?
   function claimWinnings() stateIs(State.Resolved) external {
     if(bets[outcome][msg.sender] > 0) {
-      uint percentage = (bets[outcome][msg.sender] * multiplier) / totals[outcome];
-      uint winnings = (totals[!outcome] * percentage) / multiplier;
-      uint rake = (winnings * fee) / multiplier;
+      uint percentage = bets[outcome][msg.sender].mul(multiplier).div(totals[outcome]);
+      uint winnings = totals[!outcome].mul(percentage).div(multiplier);
+      uint rake = winnings.mul(fee).div(100);
       winnings = winnings - rake;
+
       asyncSend(msg.sender, winnings + bets[outcome][msg.sender]);
       bets[outcome][msg.sender] = 0;
     }
   }
 
-  // contract should only be destructible after withdrawal period is over
-  function destroy() onlyOwner {
-    if(state == State.Finished)
-      super.destroy();
+  function destroy() onlyOwner stateIs(State.Finished) {
+    super.destroy();
   }
 
   modifier stateIs(State _state) {
-    if(state != _state)
+    if(getState() != _state)
       throw;
     _;
   }
-
-
-
 }

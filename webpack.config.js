@@ -5,10 +5,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
-  entry: path.join(__dirname, 'app/javascripts/app.js'),
+  entry: path.join(__dirname, 'src/index.js'),
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'app.bundle.js',
+    filename: 'app.js',
   },
   module: {
     loaders: [{
@@ -21,20 +21,28 @@ const config = {
     }, {
       test: /\.json$/,
       use: 'json-loader'
-    }]
+    }/*, {
+      test: /\.sol/,
+      use: `truffle-solidity-loader?migrations_directory=${path.resolve(__dirname, '../migrations')}`
+    }*/]
   },
   devServer: {
     contentBase: path.join(__dirname, "/dist"),
     compress: true,
     port: 3000,
     host: "0.0.0.0",
+    historyApiFallback: {
+      index: '/index.html'
+    }
   },
+  devtool: 'inline-source-map',
   watchOptions: {
     poll: 1000
   },
   plugins: [
+    // TODO: Use HtmlWebpackPlugin to generate the html from a template
     new CopyWebpackPlugin([
-      { from: './app/index.html', to: "index.html" }
+      { from: './public/index.html', to: "index.html" }
     ])
   ]
 };

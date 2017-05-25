@@ -10,12 +10,24 @@
   "author": "maraoz",
   "license": "MIT",
   "dependencies": {
+    "emoji-dictionary": "^1.0.6",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "redux": "^3.6.0",
+    "redux-actions": "^2.0.3",
+    "redux-logger": "^3.0.6",
+    "redux-promise-middleware": "^4.3.0",
+    "redux-thunk": "^2.2.0",
+    "truffle-solidity-loader": "^0.0.8"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.0",
     "babel-preset-react": "^6.24.1",
