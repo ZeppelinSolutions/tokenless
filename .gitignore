@@ -1,2 +1,7 @@
 *.swp
 *.swo
+
+/build
+/installed_contracts
+/node_modules
+/dist

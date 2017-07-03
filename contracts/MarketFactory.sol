@@ -1,22 +1,20 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.11;
 
 import "./Market.sol";
 
 contract MarketFactory {
 
-  address[] public marketContracts;
-
   function MarketFactory() {
-
   }
 
-  event MarketCreated(string text, uint blocks, address marketAddress);
+  event MarketCreated(string text, uint endBlock, address marketAddress);
 
   //Creates a Market contract, performs bookkeeping, transfers ownership of the contract to the sender, and returns the address
   function createMarket(string _text, uint _blocks) external returns (address) {
     uint endDate = block.number + _blocks;
     Market market = new Market(_text, endDate);
-    marketContracts.push(market);
+
+    // TODO: Ownership queda en mkt factory
     market.transferOwnership(msg.sender);
 
     MarketCreated(_text, endDate, market);
@@ -24,8 +22,6 @@ contract MarketFactory {
     return market;
   }
 
-  function getActiveMarkets() external returns (address[]) { }
-
-
+  // TODO: Agregar metodo de proxy a chooseOutcome, validando que solo el que lo creó lo pueda llamar
 
 }
