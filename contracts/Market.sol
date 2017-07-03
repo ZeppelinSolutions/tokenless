@@ -32,12 +32,6 @@ contract Market is Destructible, PullPayment {
     endBlock = _endBlock;
   }
 
-  // sending money to the contract equals a bet for true
-  // TODO: Review. Shouldn't we just reject it?
-  function () payable stateIs(State.Open) {
-    bet(true);
-  }
-
   event Bet(address indexed from, bool prediction, uint value);
 
   function bet(bool prediction) payable stateIs(State.Open) {

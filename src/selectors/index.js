@@ -4,6 +4,7 @@ export const getMarketFactory = (state) =>
 // TODO: Ensure the first wallet is the correct one to use
 // See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#raising_hand-account-list-reflects-user-preference
 export const getCurrentWallet = (state) =>
+  // TODO: Review accounts as a sync http request
   Promise.resolve(state.network.web3.eth.accounts[0])
 
 // TODO: Use a memoized selector
