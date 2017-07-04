@@ -22,7 +22,8 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "^4.3.0",
     "redux-thunk": "^2.2.0",
-    "truffle-solidity-loader": "^0.0.8"
+    "truffle-solidity-loader": "^0.0.8",
+    "zeppelin-solidity": "^1.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
