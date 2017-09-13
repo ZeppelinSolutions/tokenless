@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 
 import "zeppelin/lifecycle/Destructible.sol";
 import "zeppelin/payment/PullPayment.sol";
-import "zeppelin/SafeMath.sol";
+import "zeppelin/math/SafeMath.sol";
 
 
 contract Market is Destructible, PullPayment {
