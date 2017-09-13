@@ -1,8 +1,6 @@
-*.swp
-*.swo
-
-/build
-/installed_contracts
-/node_modules
-/dist
-.idea/
+node_modules/
+build/**/*
+build_webpack/**/*
+.idea/**/*
+scripts/data/
+firebase-debug.log
