@@ -38,7 +38,7 @@ class App extends Component {
               <span className="glyphicon glyphicon-flash" aria-hidden="true"></span>
               Powered by OpenZeppelin |&nbsp;
               <a
-                href="https://github.com/ajsantander/tokenless"
+                href="https://github.com/OpenZeppelin/tokenless"
                 target="_blank"
                 rel="noopener noreferrer"
               >
