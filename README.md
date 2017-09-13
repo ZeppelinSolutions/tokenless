@@ -23,3 +23,4 @@ Users will be able to see a list of active markets, view details for each one, a
 
 ### Log view
 Users will see a list of active markets they have placed bets in, and a history of resolved markets they have participated in, with logs of how much they bet and how much they won.
+
