@@ -4,7 +4,7 @@ import * as dateUtil from './DateUtil';
 export let currentSimulatedDateUnix = dateUtil.dateToUnix(new Date());
 
 export function getCurrentTime(web3) {
-	return web3.eth.getBlock('latest').timestamp;
+  return web3.eth.getBlock('latest').timestamp;
 }
 
 export function getBlockNumber(web3) {
