@@ -14,7 +14,7 @@ contract('Prediction (Resolve)', function(accounts) {
   it('should be resolvable only by the owner, and only after the closing date', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );

@@ -12,7 +12,7 @@ contract('Prediction (General)', function(accounts) {
 
   it('should contain a valid text statement', async function() {
 
-    const betEndTimestamp = web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5);
+    const betEndTimestamp = web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5);
     const withdrawPeriod = dateUtil.daysToSeconds(10);
     util.log('betEndTimestamp:', betEndTimestamp);
     util.log('withdrawPeriod:', withdrawPeriod);
@@ -32,7 +32,7 @@ contract('Prediction (General)', function(accounts) {
 
   it('should have a valid bet end date and withdrawal period', async function() {
 
-    const betEndTimestamp = web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5);
+    const betEndTimestamp = web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5);
     const withdrawPeriod = dateUtil.daysToSeconds(2);
     util.log('betEndTimestamp:', betEndTimestamp);
     util.log('withdrawPeriod:', withdrawPeriod);
@@ -45,7 +45,7 @@ contract('Prediction (General)', function(accounts) {
     util.log('contract created');
 
     // Assumes that tests are ran immediately after contract creation.
-    const nowTimestamp = web3Util.currentSimulatedDateUnix;
+    const nowTimestamp = web3Util.getCurrentTime(web3);
     const read_betEndTimestamp = (await contract.betEndTimestamp.call()).toNumber();
     util.log('read_betEndTimestamp: ', read_betEndTimestamp);
     const read_withdrawPeriod = (await contract.withdrawPeriod.call()).toNumber();
@@ -62,7 +62,7 @@ contract('Prediction (General)', function(accounts) {
   it('it should correctly track its state', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(2),
       2
     );

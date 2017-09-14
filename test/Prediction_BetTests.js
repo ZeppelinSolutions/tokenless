@@ -10,7 +10,7 @@ contract('Prediction (Bets)', function(accounts) {
   it('should accepts funds via bets, increasing its balance', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(1),
       2
     );
@@ -36,7 +36,7 @@ contract('Prediction (Bets)', function(accounts) {
 
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
@@ -63,7 +63,7 @@ contract('Prediction (Bets)', function(accounts) {
   it('should keep track of a users positive and negative bet balances', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
@@ -109,7 +109,7 @@ contract('Prediction (Bets)', function(accounts) {
 
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
