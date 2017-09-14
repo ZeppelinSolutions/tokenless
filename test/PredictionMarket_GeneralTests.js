@@ -24,7 +24,7 @@ contract('PredictionMarket (General)', function(accounts) {
     const predictionStatement = 'The market contract will work.';
     const creationTransaction = await market.createPrediction(
       predictionStatement,
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       {
         from: accounts[0]
@@ -63,19 +63,19 @@ contract('PredictionMarket (General)', function(accounts) {
     const localAddresses = [];
     localAddresses.push((await market.createPrediction(
       'Prediction 0.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       {from: accounts[0]}
     )).logs[0].args.predictionAddress);
     localAddresses.push((await market.createPrediction(
       'Prediction 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       {from: accounts[0]}
     )).logs[0].args.predictionAddress);
     localAddresses.push((await market.createPrediction(
       'Prediction 2.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       {from: accounts[0]}
     )).logs[0].args.predictionAddress);

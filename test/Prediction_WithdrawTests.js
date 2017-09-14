@@ -14,7 +14,7 @@ contract('Prediction (Withdraw)', function(accounts) {
   it('should allow winners to withdraw their prize after the prediction is resolved', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
@@ -69,7 +69,7 @@ contract('Prediction (Withdraw)', function(accounts) {
   it('should allow the owner to withdraw his fees after the prediction is resolved', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
@@ -126,7 +126,7 @@ contract('Prediction (Withdraw)', function(accounts) {
   it('it should allow fee and prize withdrawals both in resolved and finished states', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(2),
       2
     );
@@ -174,7 +174,7 @@ contract('Prediction (Withdraw)', function(accounts) {
   it('it should allow an owner to purge the contract after the withdraw period expires', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(10),
       2
     );
@@ -228,7 +228,7 @@ contract('Prediction (Withdraw)', function(accounts) {
   it('it should allow fee and prize withdrawals both in resolved and finished states', async function() {
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(2),
       2
     );
@@ -268,7 +268,7 @@ contract('Prediction (Withdraw)', function(accounts) {
     const feePercent = 2;
     const contract = await Prediction.new(
       'Bitcoin will reach $5000 in October 1.',
-      web3Util.currentSimulatedDateUnix + dateUtil.daysToSeconds(5),
+      web3Util.getCurrentTime(web3) + dateUtil.daysToSeconds(5),
       dateUtil.daysToSeconds(2),
       feePercent
     );
